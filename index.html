@@ -115,6 +115,8 @@
       color: white;
       padding: 8px;
       border-radius: 6px;
+      opacity: 0;
+      transition: all 250ms ease;
     }
 
     .popup {
@@ -138,11 +140,12 @@
     </div>
   </div>
   <div id="counter">
-    <span>Loading...</span>
+    <span id="span">Loading...</span>
   </div>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119758811-1"></script>
-  <script src="https://www.gstatic.com/firebasejs/5.0.3/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.0.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.0.3/firebase-database.js"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
@@ -165,15 +168,18 @@
     firebase.initializeApp(config);
     const dbRef = firebase.database().ref();
     dbRef.on("value", function (v) {
-      let span = document.createElement("span");
+      let span = document.getElementById("span");
       let str = new String(v.val().clicks);
       const count = 9 - str.length;
       for (let i = 0; i < count; i++) {
         str = "0" + str;
       }
-      span.innerText = str;
-      cntr.innerHTML = span.outerHTML;
-
+      window.requestAnimationFrame(()=>{
+        span.innerText = str;
+        window.requestAnimationFrame(()=>{
+          span.style.opacity = 1;
+        })
+      })
     });
     swch.addEventListener("click", function () {
       let popup = document.createElement("div");
