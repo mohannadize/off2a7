@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="shortcut icon" type="image/jpg" href="icon.jpg" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Switch</title>
+  <meta property='og:title' content='Switch'>
+  <meta property='og:description' content='On and Off Switch'>
+  <meta property='og:image' content='http://off-switch.epizy.com/icon512.jpg'>
+  <meta property='og:url' content='http://off-switch.epizy.com/'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css">
+  <meta name='twitter:card' content='summary'>
+  <meta name='twitter:url' content='http://off-switch.epizy.com/'>
+  <meta name='twitter:title' content='Switch'>
+  <meta name='twitter:description' content='On and Off Switch'>
+  <meta name="twitter:image" content="http://off-switch.epizy.com/icon512.jpg" />
+  <link rel='manifest' href='manifest.json'>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body>div:first-child {
+      width: 96px;
+      height: 48px;
+      margin: auto;
+      margin-top: 100px;
+      transform: scale(2)
+    }
+
+    #checkbox {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      width: inherit;
+      height: inherit;
+      border-radius: 24px;
+      z-index: 2;
+    }
+
+    #checkbox:active {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #checkbox+#switch {
+      background-color: rgb(240, 54, 54);
+      width: inherit;
+      height: inherit;
+      position: relative;
+      border-radius: 24px;
+      transition: all 250ms ease;
+      box-shadow: 0 2px 2px 0px rgba(0, 0, 0, 0.1);
+    }
+
+    #checkbox:checked+#switch {
+      background-color: rgb(83, 211, 66)
+    }
+
+    #checkbox+#switch::after {
+      content: "";
+      background-color: rgb(255, 255, 255);
+      width: calc(48px - 6px);
+      height: calc(48px - 6px);
+      margin: 3px;
+      box-shadow: 0 2px 2px 0px rgba(0, 0, 0, 0.2);
+      position: absolute;
+      border-radius: 24px;
+      left: 0;
+      right: 100%;
+      transition: all 250ms ease;
+    }
+
+    #checkbox:checked+#switch::after {
+      right: 0;
+      left: 50%;
+    }
+
+    #checkbox+#switch>span {
+      position: absolute;
+      width: 50%;
+      text-align: center;
+      color: white;
+      top: 12.5%;
+      left: 5%;
+      right: 0;
+      bottom: 0;
+      font-size: 24px;
+    }
+
+    #checkbox+#switch>.first {
+      left: 45%;
+      top: 25%;
+      font-family: sans-serif
+    }
+
+    #counter {
+      font-family: monospace;
+      position: absolute;
+      bottom: 0;
+      margin: auto;
+      width: 100%;
+      text-align: center;
+      padding-bottom: 75px;
+      font-size: 24px;
+      cursor: default;
+    }
+
+    #counter>span {
+      background-color: rgb(56, 56, 56);
+      color: white;
+      padding: 8px;
+      border-radius: 6px;
+    }
+
+    .popup {
+      position: absolute;
+      top: 45%;
+      left: 49%;
+      color: rgba(0, 0, 0, 0.3);
+      font-size: 72px;
+      opacity: 1;
+      transition: all 1000ms ease;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <input id="checkbox" type="checkbox">
+    <div id="switch">
+      <span class="first">Off</span>
+      <span class="second">ءح</span>
+    </div>
+  </div>
+  <div id="counter">
+    <span>Loading...</span>
+  </div>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119758811-1"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.0.3/firebase.js"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-119758811-1');
+  </script>
+  <script>
+    const swch = document.getElementById("checkbox");
+    const cntr = document.getElementById("counter");
+    const body = document.getElementsByTagName("body");
+    var config = {
+      apiKey: "AIzaSyA5ncr6xDtUEALuuJpEuBDMYBOsMiRO0nI",
+      authDomain: "on-off-switch.firebaseapp.com",
+      databaseURL: "https://on-off-switch.firebaseio.com",
+      projectId: "on-off-switch",
+      storageBucket: "",
+      messagingSenderId: "266691203555"
+    };
+    firebase.initializeApp(config);
+    const dbRef = firebase.database().ref();
+    dbRef.on("value", function (v) {
+      let span = document.createElement("span");
+      let str = new String(v.val().clicks);
+      const count = 9 - str.length;
+      for (let i = 0; i < count; i++) {
+        str = "0" + str;
+      }
+      span.innerText = str;
+      cntr.innerHTML = span.outerHTML;
+
+    });
+    swch.addEventListener("click", function () {
+      let popup = document.createElement("div");
+      let rotation = Math.floor(Math.random() * 30) - 15;
+      popup.classList.add("popup");
+      popup.setAttribute("lang", "ar");
+      popup.setAttribute("dir", "rtl");
+      popup.style["top"] = ((5 - Math.floor(Math.random() * 10)) + 45) + "%";
+      popup.style["left"] = ((Math.floor(Math.random() * 10) - 5) + 45) + "%";
+      popup.style["transform"] = `rotate(${rotation}deg) translateY(0px) scale(1)`;
+      let sound;
+      if (swch.checked) {
+        popup.innerText = unescape("%u0621%u062D");
+        sound = new Audio("13.mp3");
+      } else {
+        sound = new Audio("12.mp3");
+        popup.innerText = unescape("%u0621%u0641");
+      }
+      sound.play();
+      window.requestAnimationFrame(() => {
+        body[0].appendChild(popup);
+        window.requestAnimationFrame(() => {
+          popup.style["transform"] = `rotate(${rotation}deg) translateY(-60px) scale(0.8)`;
+          popup.style["opacity"] = 0;
+        })
+      })
+      setTimeout(() => {
+        body[0].removeChild(popup);
+      }, 1000);
+      if (swch.checked) {
+
+        dbRef.transaction(function (value) {
+          value.clicks += 1;
+          return value;
+        });
+      }
+    })
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register("sw.js");
+    }
+  </script>
+</body>
+
+</html>

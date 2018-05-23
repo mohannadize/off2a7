@@ -1,0 +1,20 @@
+{
+  "name": "Off Switch",
+  "short_name": "Off!!",
+  "icons": [{
+        "src": "icon.jpg",
+        "type": "image/png",
+        "sizes": "192x192"
+      }, {
+        "src": "icon512.jpg",
+        "type": "image/png",
+        "sizes": "512x512"
+      }],
+  "start_url": ".",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "description": "Off Switch!",
+  "orientation":"portrait"
+}
