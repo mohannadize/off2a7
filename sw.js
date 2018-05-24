@@ -1,4 +1,4 @@
-const cacheStore = "Switch-1.0.2";
+const cacheStore = "Switch-1.0.3";
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches.open(cacheStore).then((cache) => {
@@ -15,27 +15,29 @@ self.addEventListener("install", (e) => {
   );
 });
 self.addEventListener("fetch", (e) => {
-  e.respondWith(
-    caches.match(e.request).then((res) => {
-      return res || fetch(e.request).then((netres) => {
-        return caches.open(cacheStore).then((x) => {
-          x.put(e.request.url, netres.clone());
-          return netres;
+  if (!e.request.url.startsWith("chrome-extension://")) {
+    e.respondWith(
+      caches.match(e.request).then((res) => {
+        return res || fetch(e.request).then((netres) => {
+          return caches.open(cacheStore).then((x) => {
+            x.put(e.request.url, netres.clone());
+            return netres;
+          });
         });
-      });
-    })
-  );
+      })
+    );
+  }
 });
 self.addEventListener("activate", (e) => {
   e.waitUntil(
-      caches.keys().then(function (ketchups) {
-          return Promise.all(
-              ketchups.filter(function (cacheName) {
-                  return cacheName.startsWith('Switch') && cacheNames.html != cacheName;
-              }).map(function (cacheName) {
-                  return caches.delete(cacheName);
-              })
-          );
-      })
+    caches.keys().then(function (ketchups) {
+      return Promise.all(
+        ketchups.filter(function (cacheName) {
+          return cacheName.startsWith('Switch') && cacheName != cacheStore;
+        }).map(function (cacheName) {
+          return caches.delete(cacheName);
+        })
+      );
+    })
   )
 })
