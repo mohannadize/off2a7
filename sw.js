@@ -1,4 +1,4 @@
-const cacheStore = "Switch-1.0.3";
+const cacheStore = "Switch-1.0.4";
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches.open(cacheStore).then((cache) => {
